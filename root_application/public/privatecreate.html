@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Private Group</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            color: #26355D;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1E2A4A;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .submit-btn {
+            background-color: #26355D;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">Create Private Group</span>
+            <button class="close-btn" onclick="window.close()">&times;</button>
+        </div>
+        <form id="createForm">
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="username" required maxlength="6">
+                <div class="error-message" id="usernameError"></div>
+            </div>
+            <div class="form-group">
+                <label>Group Name:</label>
+                <input type="text" id="groupName" required maxlength="8">
+                <div class="error-message" id="groupNameError"></div>
+            </div>
+            <div class="form-group">
+                <label>Create PIN:</label>
+                <input type="password" id="createPin" required maxlength="4">
+                <div class="error-message" id="pinError"></div>
+            </div>
+            <div class="form-group">
+                <label>Confirm PIN:</label>
+                <input type="password" id="confirmPin" required maxlength="4">
+                <div class="error-message" id="confirmPinError"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="submit-btn">Create</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const validateForm = () => {
+            let isValid = true;
+            const errors = {
+                username: '',
+                groupName: '',
+                pin: '',
+                confirmPin: ''
+            };
+
+            const username = document.getElementById('username').value;
+            if (!/^[A-Za-z]{1,6}$/.test(username)) {
+                errors.username = 'Username must contain only alphabets (max 6 characters)';
+                isValid = false;
+            }
+
+            const groupName = document.getElementById('groupName').value;
+            if (!/^[A-Za-z]{1,8}$/.test(groupName)) {
+                errors.groupName = 'Group name must contain only alphabets (max 8 characters)';
+                isValid = false;
+            }
+
+            const createPin = document.getElementById('createPin').value;
+            if (!/^\d{4}$/.test(createPin)) {
+                errors.pin = 'PIN must be exactly 4 digits';
+                isValid = false;
+            }
+
+            const confirmPin = document.getElementById('confirmPin').value;
+            if (confirmPin !== createPin) {
+                errors.confirmPin = 'PINs do not match';
+                isValid = false;
+            }
+
+            
+            document.getElementById('usernameError').textContent = errors.username;
+            document.getElementById('groupNameError').textContent = errors.groupName;
+            document.getElementById('pinError').textContent = errors.pin;
+            document.getElementById('confirmPinError').textContent = errors.confirmPin;
+
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = el.textContent ? 'block' : 'none';
+            });
+
+            return isValid;
+        };
+
+        document.getElementById('createForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (validateForm()) {
+                window.close();
+            }
+        });
+
+        document.getElementById('username').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^A-Za-z]/g, '');
+        });
+
+        document.getElementById('groupName').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^A-Za-z]/g, '');
+        });
+
+        document.getElementById('createPin').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        document.getElementById('confirmPin').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+        const menuButton = document.querySelector('.menu-icon');
+        const dropdownMenu = document.querySelector('.dropdown-content');
+        
+        menuButton.onclick = (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        };
+
+        document.querySelectorAll('.dropdown-item > a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const submenu = this.nextElementSibling;
+    
+                document.querySelectorAll('.submenu').forEach(otherSubmenu => {
+                    if (otherSubmenu !== submenu) {
+                        otherSubmenu.classList.remove('show');
+                    }
+                });
+            
+                submenu.classList.toggle('show');
+            });
+        });
+
+        window.onclick = () => {
+            document.querySelectorAll('.dropdown-content, .submenu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        };
+
+        document.querySelectorAll('.submenu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const parentItem = this.closest('.dropdown-item');
+                
+                if(parentItem.querySelector('a').textContent === 'Create group') {
+                    window.open('privatecreate.html', 'Create Group', 
+                        'width=450,height=500,top=50%,left=50%,transform=translate(-50%,-50%)');
+                } else if(parentItem.querySelector('a').textContent === 'Join group') {
+                    window.open('privatejoin.html', 'Join Group', 
+                        'width=450,height=400,top=50%,left=50%,transform=translate(-50%,-50%)');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

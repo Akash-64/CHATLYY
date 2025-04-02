@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="chatcss.css">
+    <script src="chatjs.js" defer></script>
+</head>
+<body>
+    
+    <div class="sidebar">
+        <h2>Groups</h2>
+    </div>
+
+    <div class="chat-window">
+        <div class="chat-header">
+            <p>Welcome to Chattly!</p>
+            <div class="dropdown">
+                <button class="menu-icon">
+                    <img src="dot_button.png" alt="Menu">
+                </button>
+                <div class="dropdown-content">
+                    <div class="dropdown-item">
+                        <a href="privatecreate.html">Create group</a>
+                        <div class="submenu">
+                            <a href="#">Private group</a>
+                        </div>
+                    </div>
+                    <div class="dropdown-item">
+                        <a href="#">Join group</a>
+                        <div class="submenu">
+                            <a href="privatejoin.html">Private group</a>
+                            <a href="publicjoin.html">Public group</a>
+                        </div>
+                    </div>
+                    <a href="#">Requests</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-box">
+            <div class="welcome-message">
+                <p>Create or join a group to start chatting</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Type a message...">
+            <button id="sendButton">
+                <img src="send_button.png" alt="Send">
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Add Socket.IO chat functionality -->
+    <script>
+        // Connect to Socket.IO server
+        const socket = io();
+        
+        // Get username and room from URL parameters
+        const { username, room } = (() => {
+            const params = {};
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            
+            params.username = urlParams.get('username') || 'Anonymous';
+            params.room = urlParams.get('room') || 'public';
+            
+            return params;
+        })();
+        
+        // DOM elements
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('messageInput');
+        const messagesContainer = document.getElementById('messages');
+        
+        // Join chatroom
+        socket.emit('join', { username, roomName: room });
+        
+        // Message submit
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get message text
+            const msg = messageInput.value;
+            
+            // Emit message to server
+            socket.emit('message', { text: msg, room, sender: username });
+            
+            // Clear input
+            messageInput.value = '';
+            messageInput.focus();
+        });
+        
+        // Message from server
+        socket.on('message', (message) => {
+            // Create message element
+            const div = document.createElement('div');
+            div.classList.add('message');
+            
+            if (message.sender === username) {
+                div.classList.add('sent');
+            } else {
+                div.classList.add('received');
+            }
+            
+            div.innerHTML = `
+                <p>${message.text}</p>
+                <div class="message-meta">
+                    <span>${message.sender}</span>
+                </div>
+            `;
+            
+            // Add to DOM
+            messagesContainer.appendChild(div);
+            
+            // Scroll down
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html>

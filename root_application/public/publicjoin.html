@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Public Group</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            width: 400px;
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            color: #26355D;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1E2A4A;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .submit-btn {
+            background-color: #26355D;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">Join Public Chat</span>
+            <button class="close-btn" onclick="window.close()">&times;</button>
+        </div>
+        <form id="publicJoinForm">
+            <div class="form-group">
+                <label>Anonymous Name:</label>
+                <input type="text" id="anonymousName" required maxlength="6">
+                <div class="error-message" id="nameError"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="submit-btn">Join</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('anonymousName').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^A-Za-z]/g, '');
+            
+            if(e.target.value.length > 6) {
+                e.target.value = e.target.value.slice(0,6);
+            }
+        });
+
+        document.getElementById('publicJoinForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('anonymousName');
+            const errorElement = document.getElementById('nameError');
+            let isValid = true;
+
+            if(nameInput.value.length < 1) {
+                errorElement.textContent = 'Name is required';
+                isValid = false;
+            }
+            else if(!/^[A-Za-z]{1,6}$/.test(nameInput.value)) {
+                errorElement.textContent = 'Only alphabets allowed (max 6 characters)';
+                isValid = false;
+            }
+            else {
+                errorElement.textContent = '';
+            }
+
+            errorElement.style.display = errorElement.textContent ? 'block' : 'none';
+
+            if(isValid) {
+                window.close();
+            }
+        });
+    </script>
+</body>
+</html>
