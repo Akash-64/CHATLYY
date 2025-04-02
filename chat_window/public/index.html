@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat App</title>
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="script.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #f0f2f5;
+            justify-content: center;
+        }
+        /* Chat Window */
+        .chat-window {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: #e0e0e0;
+        }
+
+        .chat-header {
+            background: #26355D;
+            color: white;
+            padding: 15px;
+            font-size: 130%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Chat messages */
+        .chat-box {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: url('https://www.toptal.com/designers/subtlepatterns/uploads/giftly.png');
+        }
+
+        .message {
+            background-color: #26355D;
+            max-width: 60%;
+            padding: 12px 15px;
+            margin: 10px 12px;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .left {
+            float: left;
+            clear: both;
+            background: #354B7C;
+        }
+
+        .right {
+            float: right;
+            clear: both;
+            background: #1E2A4A;
+        }
+
+        .join-message {
+            text-align: center;
+            font-size: 14px;
+            color: black;
+            margin: 20px 0;
+            font-weight: bold;
+            opacity: 80%;
+            padding: 10px;
+        }
+        /* Menu Button */
+        .menu-icon {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .menu-icon img {
+            width: 25px;
+            height: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Chat Input */
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #ccc;
+            align-items: center;
+            box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: #26355D;
+        }
+
+        .chat-input button {
+            background: #26355D;
+            border: none;
+            padding: 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-input button img {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) invert(1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Chat Window -->
+    <div class="chat-window">
+        <div class="chat-header">
+            Welcome to Chattly!
+            <button class="menu-icon">
+                <img src="\dot_button.png" alt="Menu">
+            </button>
+        </div>
+
+        <div id="message-container" class="chat-box"></div>
+       
+
+        <form id="send-container" class="chat-input">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button id="sendButton">
+                <img src="/send_button.png" alt="Send">
+            </button>
+        </form>
+    </div>
+</body>
+</html>
